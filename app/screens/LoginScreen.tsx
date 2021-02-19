@@ -1,19 +1,22 @@
 import * as React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View, KeyboardAvoidingView, Dimensions  } from "react-native";
 import Button from "../components/Button";
+import ErrorMessage from "../components/ErrorMessage";
 import FormInput from "../components/FormInput";
 import colors from "../styles/colors";
 
-interface State {
-  email: string;
-  password: string;
-}
 
-class LoginScreen extends React.Component<{}, State> {
-  readonly state: State = {
-    email: "",
-    password: ""
-  };
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+class LoginScreen extends React.Component{
+  constructor(props: any){
+    super(props);
+    this.state={
+      email: "",
+      password: "",
+      error: false,
+    }
+  }
 
   handleEmailChange = (email: string) => {
     this.setState({ email: email });
@@ -29,13 +32,15 @@ class LoginScreen extends React.Component<{}, State> {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={Math.round(windowHeight*-0.35)} >
         <Image source={require('../assets/Logo.png')} style={styles.logo} />
         <View style={styles.form}>
           <FormInput
             value={this.state.email}
             onChangeText={this.handleEmailChange}
             placeholder={"Email"}
+            autoCorrect={false}
+            keyboardType="email-address"
           />
           <FormInput
             value={this.state.password}
@@ -43,8 +48,9 @@ class LoginScreen extends React.Component<{}, State> {
             placeholder={"Password"}
           />
           <Button label={"Login"} onPress={this.handleLoginPress} />
+          {this.state.error ? <ErrorMessage error={'Credentials Incorrect'} visible={true} /> : <></>}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
