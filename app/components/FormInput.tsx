@@ -9,7 +9,7 @@ class FormInput extends React.Component<Props> {
     const { style, ...otherProps } = this.props;
     return (
       <TextInput
-        selectionColor={colors.DODGER_BLUE}
+        selectionColor={colors.GREEN}
         style={[styles.textInput, style]}
         {...otherProps}
       />
@@ -20,7 +20,7 @@ class FormInput extends React.Component<Props> {
 const styles = StyleSheet.create({
   textInput: {
     height: 40,
-    borderColor: colors.SILVER,
+    borderColor: colors.BLACK,
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 20
   }
