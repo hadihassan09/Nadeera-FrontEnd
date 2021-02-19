@@ -46,6 +46,7 @@ class LoginScreen extends React.Component{
             value={this.state.password}
             onChangeText={this.handlePasswordChange}
             placeholder={"Password"}
+            secureTextEntry
           />
           <Button label={"Login"} onPress={this.handleLoginPress} />
           {this.state.error ? <ErrorMessage error={'Credentials Incorrect'} visible={true} /> : <></>}
