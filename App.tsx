@@ -55,7 +55,7 @@ const App = () => {
         };
     }
   };
-
+  /* @ts-ignore */
   const [loginState, dispatch] = React.useReducer(
     loginReducer,
     initialLoginState,
@@ -70,6 +70,7 @@ const App = () => {
         } catch (e) {
           console.log(e);
         }
+        /* @ts-ignore */
         dispatch({action: 'LOGIN', token: token});
       },
 
@@ -79,6 +80,7 @@ const App = () => {
         } catch (e) {
           console.log(e);
         }
+        /* @ts-ignore */
         dispatch({action: 'LOGOUT'});
       },
 
@@ -96,6 +98,7 @@ const App = () => {
       try {
         token = await AsyncStorage.getItem('token');
         if (token !== '' && token != null) isLoggedIn = true;
+        /* @ts-ignore */
         dispatch({
           action: 'RETRIEVE_TOKEN',
           token: token,

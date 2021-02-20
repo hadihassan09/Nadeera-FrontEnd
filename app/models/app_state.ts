@@ -9,7 +9,7 @@ const internetStatus = () => {
 };
 
 export const login = async (data: any, onSuccess: any, onFailure: any) => {
-    {/* @ts-ignore */} 
+    /* @ts-ignore */
     if (internetStatus === false)
         onFailure({
             "error":"Connection Error"
