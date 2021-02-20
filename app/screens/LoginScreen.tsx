@@ -3,19 +3,31 @@ import { Image, StyleSheet, View, KeyboardAvoidingView, Dimensions  } from "reac
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 import FormInput from "../components/FormInput";
+import { login } from "../models/app_state";
 import colors from "../styles/colors";
+import DeviceInfo from 'react-native-device-info';
+import { AuthContext } from '../models/context';
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 class LoginScreen extends React.Component{
+  static contextType = AuthContext;
   constructor(props: any){
     super(props);
     this.state={
       email: "",
       password: "",
       error: false,
+      message: '',
+      deviceName: ""
     }
+  }
+
+  componentDidMount(){
+    DeviceInfo.getDeviceName().then((deviceName) => {
+      this.setState({deviceName: deviceName});
+    });
   }
 
   handleEmailChange = (email: string) => {
@@ -26,8 +38,25 @@ class LoginScreen extends React.Component{
     this.setState({ password: password });
   };
 
-  handleLoginPress = () => {
-    console.log("Login button pressed");
+  handleLoginPress = async  () => {
+    const {signIn} = this.context;
+    await login({
+      email: this.state.email,
+      password: this.state.password,
+      device_name: this.state.deviceName 
+      },
+      (token: any)=>{
+        this.setState({error: false})
+        signIn(token);
+      },
+      (data: any)=>{
+        if(data.error.error != undefined)
+          this.setState({error: true, message: 'Credentials Incorrect'})
+        else{
+          this.setState({error: true, message: 'Invalid email, or password'})
+        }
+      }
+    );
   };
 
   render() {
@@ -49,7 +78,7 @@ class LoginScreen extends React.Component{
             secureTextEntry
           />
           <Button label={"Login"} onPress={this.handleLoginPress} />
-          {this.state.error ? <ErrorMessage error={'Credentials Incorrect'} visible={true} /> : <></>}
+          {this.state.error ? <ErrorMessage error={this.state.message} visible={true} /> : <></>}
         </View>
       </KeyboardAvoidingView>
     );
