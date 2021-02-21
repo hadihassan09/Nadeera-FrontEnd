@@ -9,6 +9,9 @@ import {
 import {RNCamera} from 'react-native-camera';
 /* @ts-ignore */
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+
 import colors from '../styles/colors';
 
 const PendingView = () => (
@@ -44,8 +47,78 @@ class CameraScreen extends PureComponent {
     super(props);
     this.state = {
       flashlight: false,
+      uploading: false,
+      percentage: '0',
+      message: '',
+      uploaded: false,
     };
+
+    auth()
+      .signInAnonymously()
+      .then(() => {})
+      .catch((error) => {
+        console.error(error);
+      });
   }
+
+  uploadImage = async (uri: string) => {
+    const uploadUri = uri;
+    let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+
+    // Add timestamp to File Name
+    const extension = filename.split('.').pop();
+    const name = filename.split('.').slice(0, -1).join('.');
+    filename = name + Date.now() + '.' + extension;
+
+    const task = storage().ref(filename).putFile(uploadUri);
+    try {
+      this.setState({
+        uploading: true,
+      });
+      task.on('state_changed', (taskSnapshot) => {
+        const progress = Math.round(
+          (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
+        );
+        this.setState({
+          percentage: progress,
+        });
+      });
+
+      task.then(async () => {
+        this.setState({
+          uploading: false,
+          percentage: '0',
+          uploaded: true,
+        });
+        setTimeout(
+          /* @ts-ignore */
+          () => {
+            this.setState({
+              uploaded: false,
+            });
+          },
+          1500,
+        );
+        let url = await storage().ref(filename).getDownloadURL();
+      });
+    } catch (error) {
+      this.setState({
+        uploading: false,
+        percentage: '0',
+      });
+      console.log(error);
+    }
+  };
+
+  takePicture = async (camera: any) => {
+    try {
+      const options = {quality: 0.5, base64: true};
+      const data = await camera.takePictureAsync(options);
+      this.uploadImage(data.uri);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   render() {
     return (
@@ -73,6 +146,64 @@ class CameraScreen extends PureComponent {
           }}>
           {({camera, status, recordAudioPermissionStatus}) => {
             if (status !== 'READY') return <PendingView />;
+            /* @ts-ignore */
+            if (this.state.uploading)
+              return (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      padding: 25,
+                      backgroundColor: colors.WHITE,
+                      flexDirection: 'row',
+                      borderRadius: 15,
+                      minWidth: '80%',
+                      alignItems: 'center',
+                    }}>
+                    <ActivityIndicator size="large" color={colors.BLACK} />
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        marginLeft: 10,
+                      }}>
+                      {/* @ts-ignore */}
+                      Uploading image {this.state.percentage}%
+                    </Text>
+                  </View>
+                </View>
+              );
+            /* @ts-ignore */
+            if (this.state.uploaded)
+              return (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      padding: 25,
+                      backgroundColor: colors.WHITE,
+                      flexDirection: 'row',
+                      borderRadius: 15,
+                      minWidth: '80%',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        marginLeft: 10,
+                      }}>
+                      Upload complete
+                    </Text>
+                  </View>
+                </View>
+              );
             return (
               <View
                 style={{
@@ -113,16 +244,6 @@ class CameraScreen extends PureComponent {
       </View>
     );
   }
-
-  takePicture = async function (camera: any) {
-    try {
-      const options = {quality: 0.5, base64: true};
-      const data = await camera.takePictureAsync(options);
-      console.log(data.uri);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 }
 
 const styles = StyleSheet.create({
