@@ -35,10 +35,10 @@ export default class ImageSet extends React.Component {
     }
     return (
       <Image
+        key={index + item.category}
         style={styles.image}
         source={{
-          uri:
-            'https://imagga.com/static/images/tagging/wind-farm-538576_640.jpg',
+          uri: item.uri,
         }}
       />
     );
@@ -48,10 +48,11 @@ export default class ImageSet extends React.Component {
     return (
       <View style={styles.container}>
         {/* @ts-ignore */}
-        <Text style={styles.category}>{this.props.category}:</Text>
+        <Text style={styles.category}>{this.props.data[0].category}:</Text>
         <FlatList
           /* @ts-ignore */
           data={formatData(this.props.data, 4)}
+          keyExtractor={(item, index) => item.category + index}
           style={styles.list}
           renderItem={this.renderItem}
           numColumns={5}
