@@ -14,7 +14,6 @@ import colors from '../styles/colors';
 import DeviceInfo from 'react-native-device-info';
 import {AuthContext} from '../models/context';
 
-const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 class LoginScreen extends React.Component {
   static contextType = AuthContext;

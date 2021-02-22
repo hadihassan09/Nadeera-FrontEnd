@@ -1,15 +1,7 @@
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  FlatList,
-  Image,
-  Text,
-  View,
-} from 'react-native';
+import {StyleSheet, FlatList, Image, Text, View} from 'react-native';
 import ImageSet from '../components/ImagesSet';
 import {getImages} from '../models/app_state';
-import colors from '../styles/colors';
 
 export default class GalleryScreen extends React.Component {
   constructor(props: any) {
@@ -30,7 +22,7 @@ export default class GalleryScreen extends React.Component {
           }
           this.setState({data: arrayData});
         },
-        (error: any) => {},
+        () => {},
       );
     });
   }
@@ -41,6 +33,7 @@ export default class GalleryScreen extends React.Component {
   }
 
   render() {
+    /* @ts-ignore */
     if (this.state.data.length === 0)
       return (
         <>
@@ -64,7 +57,7 @@ export default class GalleryScreen extends React.Component {
         style={styles.container}
         keyExtractor={() => (Math.random() * 1000).toString()}
         /* @ts-ignore */
-        renderItem={({item, index}) => <ImageSet data={item} />}
+        renderItem={({item}) => <ImageSet data={item} />}
       />
     );
   }

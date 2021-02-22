@@ -4,7 +4,7 @@ import LoginScreen from '../screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
-const AuthNavigation = (props: any) => {
+const AuthNavigation = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen

@@ -170,7 +170,7 @@ class CameraScreen extends PureComponent {
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
           }}>
-          {({camera, status, recordAudioPermissionStatus}) => {
+          {({camera, status}) => {
             if (status !== 'READY') return <PendingView />;
             /* @ts-ignore */
             if (this.state.uploading)
