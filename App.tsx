@@ -1,15 +1,13 @@
 import React from 'react';
-import LoginScreen from './app/screens/LoginScreen';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AuthContext} from './app/models/context';
 import axios from 'axios';
 import {View} from 'react-native';
 import {ActivityIndicator} from 'react-native';
 import colors from './app/styles/colors';
-
-const Stack = createStackNavigator();
+import AuthNavigation from './app/navigation/AuthNavigation';
+import UserNavigation from './app/navigation/UserNavigation';
 
 interface LoginState {
   isLoading: boolean;
@@ -138,19 +136,11 @@ const App = () => {
     return (
       <AuthContext.Provider value={authContext}>
         <NavigationContainer>
-          <Stack.Navigator>
-            {loginState.isLoggedIn === true ? (
-              <Stack.Screen name="Login" component={LoginScreen} options={{}} />
-            ) : (
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-            )}
-          </Stack.Navigator>
+          {loginState.isLoggedIn === true ? (
+            <UserNavigation />
+          ) : (
+            <AuthNavigation />
+          )}
         </NavigationContainer>
       </AuthContext.Provider>
     );
