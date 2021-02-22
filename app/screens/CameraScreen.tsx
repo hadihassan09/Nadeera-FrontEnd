@@ -54,6 +54,7 @@ class CameraScreen extends PureComponent {
       percentage: '0',
       message: '',
       uploaded: false,
+      type: true,
     };
 
     auth()
@@ -144,7 +145,13 @@ class CameraScreen extends PureComponent {
       <View style={styles.container}>
         <RNCamera
           style={styles.preview}
-          type={RNCamera.Constants.Type.back}
+          type={
+            /* @ts-ignore */
+
+            this.state.type
+              ? RNCamera.Constants.Type.back
+              : RNCamera.Constants.Type.front
+          }
           flashMode={
             /* @ts-ignore */
             this.state.flashlight
@@ -273,6 +280,23 @@ class CameraScreen extends PureComponent {
                     style={styles.capture}>
                     <MaterialCommunityIcons
                       name={'camera'}
+                      color={colors.WHITE}
+                      size={32}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        /* @ts-ignore */
+                        type: !this.state.type,
+                      });
+                    }}
+                    style={styles.capture}>
+                    <MaterialCommunityIcons
+                      name={
+                        /* @ts-ignore */
+                        this.state.type ? 'camera-front' : 'camera-rear'
+                      }
                       color={colors.WHITE}
                       size={32}
                     />
