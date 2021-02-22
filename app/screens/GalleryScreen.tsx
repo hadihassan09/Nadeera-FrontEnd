@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, ScrollView, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  Image,
+  Text,
+  View,
+} from 'react-native';
 import ImageSet from '../components/ImagesSet';
 import {getImages} from '../models/app_state';
 import colors from '../styles/colors';
@@ -23,9 +30,7 @@ export default class GalleryScreen extends React.Component {
           }
           this.setState({data: arrayData});
         },
-        (error: any) => {
-          console.log(error);
-        },
+        (error: any) => {},
       );
     });
   }
@@ -36,6 +41,22 @@ export default class GalleryScreen extends React.Component {
   }
 
   render() {
+    if (this.state.data.length === 0)
+      return (
+        <>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}>
+            <Image source={require('../assets/no-data.png')} />
+            <Text style={{color: 'black', fontWeight: 'bold', marginTop: 10}}>
+              No Images Found
+            </Text>
+          </View>
+        </>
+      );
     return (
       <FlatList
         /* @ts-ignore */
