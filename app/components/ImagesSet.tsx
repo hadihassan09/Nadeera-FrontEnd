@@ -6,8 +6,10 @@ import {
   FlatList,
   Dimensions,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import colors from '../styles/colors';
+import ImageView from 'react-native-image-viewing';
 
 const formatData = (data: any, numColumns: any) => {
   const numberOfFullRows = Math.floor(data.length / numColumns);
@@ -28,19 +30,30 @@ const numColumns = 5;
 export default class ImageSet extends React.Component {
   constructor(props: any) {
     super(props);
+    this.state = {
+      visible: false,
+      index: 0,
+    };
   }
   renderItem = ({item, index}: any) => {
     if (item.empty === true) {
       return <View style={[styles.image, styles.emptyImage]} />;
     }
     return (
-      <Image
-        key={index + item.category}
-        style={styles.image}
-        source={{
-          uri: item.uri,
+      <TouchableOpacity
+        style={{
+          flex: 1,
         }}
-      />
+        onPress={() => {
+          this.setState({visible: true, index: index});
+        }}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: item.uri,
+          }}
+        />
+      </TouchableOpacity>
     );
   };
 
@@ -56,6 +69,15 @@ export default class ImageSet extends React.Component {
           style={styles.list}
           renderItem={this.renderItem}
           numColumns={5}
+        />
+        <ImageView
+          /* @ts-ignore */
+          images={this.props.data}
+          /* @ts-ignore */
+          imageIndex={this.state.index}
+          /* @ts-ignore */
+          visible={this.state.visible}
+          onRequestClose={() => this.setState({visible: false})}
         />
       </View>
     );
