@@ -13,6 +13,7 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
 import colors from '../styles/colors';
+import {addImage} from '../models/app_state';
 
 const PendingView = () => (
   <View
@@ -83,30 +84,46 @@ class CameraScreen extends PureComponent {
           percentage: progress,
         });
       });
-
       task.then(async () => {
-        this.setState({
-          uploading: false,
-          percentage: '0',
-          uploaded: true,
-        });
-        setTimeout(
-          /* @ts-ignore */
-          () => {
+        let url = await storage().ref(filename).getDownloadURL();
+        addImage(
+          {
+            uri: url,
+          },
+          (data: any) => {
+            console.log(data);
             this.setState({
-              uploaded: false,
+              uploading: false,
+              percentage: '0',
+              uploaded: true,
+            });
+            setTimeout(
+              /* @ts-ignore */
+              () => {
+                this.setState({
+                  uploaded: false,
+                });
+              },
+              1500,
+            );
+          },
+          async (data: any) => {
+            let ref = storage().ref(filename);
+            await ref.delete();
+            this.setState({
+              uploading: false,
+              percentage: '0',
             });
           },
-          1500,
         );
-        let url = await storage().ref(filename).getDownloadURL();
       });
     } catch (error) {
+      let ref = storage().ref(filename);
+      await ref.delete();
       this.setState({
         uploading: false,
         percentage: '0',
       });
-      console.log(error);
     }
   };
 
