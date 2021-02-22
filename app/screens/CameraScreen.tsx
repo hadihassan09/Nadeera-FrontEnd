@@ -11,6 +11,8 @@ import {RNCamera} from 'react-native-camera';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+/* @ts-ignore */
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from '../styles/colors';
 import {addImage} from '../models/app_state';
@@ -222,39 +224,61 @@ class CameraScreen extends PureComponent {
                 </View>
               );
             return (
-              <View
-                style={{
-                  flex: 0,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.setState({
-                      /* @ts-ignore */
-                      flashlight: !this.state.flashlight,
-                    });
-                  }}
-                  style={styles.capture}>
-                  <MaterialCommunityIcons
-                    name={
-                      /* @ts-ignore */
-                      this.state.flashlight ? 'flashlight-off' : 'flashlight'
-                    }
-                    color={colors.WHITE}
-                    size={32}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.takePicture(camera)}
-                  style={styles.capture}>
-                  <MaterialCommunityIcons
-                    name={'camera'}
-                    color={colors.WHITE}
-                    size={32}
-                  />
-                </TouchableOpacity>
-              </View>
+              <>
+                <View
+                  style={{
+                    flex: 1,
+                    top: 20,
+                    left: 15,
+                    justifyContent: 'flex-start',
+                    width: '100%',
+                  }}>
+                  <TouchableOpacity
+                    /* @ts-ignore */
+                    onPress={() => this.props.navigation.goBack()}>
+                    <View>
+                      <Ionicons
+                        name="arrow-back"
+                        size={25}
+                        color={colors.WHITE}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    flex: 0,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        /* @ts-ignore */
+                        flashlight: !this.state.flashlight,
+                      });
+                    }}
+                    style={styles.capture}>
+                    <MaterialCommunityIcons
+                      name={
+                        /* @ts-ignore */
+                        this.state.flashlight ? 'flashlight-off' : 'flashlight'
+                      }
+                      color={colors.WHITE}
+                      size={32}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => this.takePicture(camera)}
+                    style={styles.capture}>
+                    <MaterialCommunityIcons
+                      name={'camera'}
+                      color={colors.WHITE}
+                      size={32}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
             );
           }}
         </RNCamera>
