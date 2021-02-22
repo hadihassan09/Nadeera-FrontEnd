@@ -93,9 +93,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     fontFamily: 'monospace',
-    color: colors.WHITE,
+    color: colors.BLACK,
   },
-  list: {},
+  list: {
+    marginLeft: 5,
+  },
   image: {
     alignItems: 'center',
     justifyContent: 'center',

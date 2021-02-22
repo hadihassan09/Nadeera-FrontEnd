@@ -73,6 +73,6 @@ export default class GalleryScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.BLACK,
+    backgroundColor: 'transparent',
   },
 });
