@@ -34,7 +34,7 @@ export const addImage = async(data: any, onSuccess: any, onFailure: any) => {
         axios.post('/image', data).then(response => {
         onSuccess(response.data);
     }).catch(err => {
-            onFailure({"error":err.response.data, "status": err.response.status});
+            onFailure(err);
     });}
 };
 
@@ -49,6 +49,6 @@ export const getImages = async(onSuccess: any, onFailure: any) => {
         axios.get('/image/all').then(response => {
         onSuccess(response.data);
     }).catch(err => {
-            onFailure({"error":err.response.data, "status": err.response.status});
+            onFailure(err);
     });}
 };
