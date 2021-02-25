@@ -1,4 +1,5 @@
 import React from 'react';
+import { RefreshControl } from 'react-native';
 import {StyleSheet, FlatList, Image, Text, View} from 'react-native';
 import ImageSet from '../components/ImagesSet';
 import {getImages} from '../models/app_state';
@@ -8,13 +9,14 @@ export default class GalleryScreen extends React.Component {
     super(props);
     this.state = {
       data: [],
+      refresh: false
     };
   }
 
   componentDidMount() {
     /* @ts-ignore */
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      getImages(
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      await getImages(
         (data: any) => {
           let arrayData = [];
           for (const category in data) {
@@ -27,14 +29,31 @@ export default class GalleryScreen extends React.Component {
     });
   }
 
+  onRefresh = async () => {
+    this.setState({ refresh: true });
+    await getImages(
+      (data: any) => {
+        let arrayData = [];
+        for (const category in data) {
+          arrayData.push(data[category]);
+        }
+        this.setState({data: arrayData, refresh: false});
+      },
+      () => {
+        this.setState({refresh: false, data: []})
+      },
+    );
+  };
+
   componentWillUnmount() {
     /* @ts-ignore */
     this._unsubscribe();
   }
 
+
   render() {
     /* @ts-ignore */
-    if (this.state.data.length === 0)
+    if (this.state.data.length === 0 && this.state.refresh === false)
       return (
         <>
           <View
@@ -45,7 +64,7 @@ export default class GalleryScreen extends React.Component {
             }}>
             <Image source={require('../assets/no-data.png')} />
             <Text style={{color: 'black', fontWeight: 'bold', marginTop: 10}}>
-              No Images Found
+              No images found
             </Text>
           </View>
         </>
@@ -55,6 +74,12 @@ export default class GalleryScreen extends React.Component {
         /* @ts-ignore */
         data={this.state.data}
         style={styles.container}
+        refreshControl={
+          <RefreshControl
+                  /* @ts-ignore */
+              refreshing={this.state.refresh}
+              onRefresh={this.onRefresh} />
+      }
         keyExtractor={() => (Math.random() * 1000).toString()}
         /* @ts-ignore */
         renderItem={({item}) => <ImageSet data={item} />}
