@@ -16,7 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from '../styles/colors';
 import {addImage, internetStatus} from '../models/app_state';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 const PendingView = () => (
   <View
@@ -56,7 +56,7 @@ class CameraScreen extends PureComponent {
       message: '',
       uploaded: false,
       type: true,
-      error: false
+      error: false,
     };
 
     auth()
@@ -78,19 +78,18 @@ class CameraScreen extends PureComponent {
 
     const task = storage().ref(filename).putFile(uploadUri);
     try {
-      if(!await internetStatus()){
+      if (!(await internetStatus())) {
         Alert.alert(
-          "Network Connection Error",
+          'Network Connection Error',
           "Check your internet connection. You don't seem to have an active internet connection. Please check your connection and try again.",
-          [
-            { text: "OK", onPress: () => {} }
-          ],
-          { cancelable: true }
+          [{text: 'OK', onPress: () => {}}],
+          {cancelable: true},
         );
-      }else{
+      } else {
         this.setState({
           uploading: true,
-        });        task.on('state_changed', (taskSnapshot) => {
+        });
+        task.on('state_changed', (taskSnapshot) => {
           const progress = Math.round(
             (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
           );
@@ -129,16 +128,14 @@ class CameraScreen extends PureComponent {
                 percentage: '0',
                 error: true,
               });
-              setTimeout(
-                ()=>{
-                  this.setState({
-                    error: false
-                  })
-                }, 1500
-              )
+              setTimeout(() => {
+                this.setState({
+                  error: false,
+                });
+              }, 1500);
             },
           );
-        }); 
+        });
       }
     } catch (error) {
       let ref = storage().ref(filename);
@@ -148,13 +145,11 @@ class CameraScreen extends PureComponent {
         percentage: '0',
         error: true,
       });
-      setTimeout(
-        ()=>{
-          this.setState({
-            error: false
-          })
-        }
-      )
+      setTimeout(() => {
+        this.setState({
+          error: false,
+        });
+      });
     }
   };
 
@@ -247,7 +242,7 @@ class CameraScreen extends PureComponent {
                       borderRadius: 15,
                       minWidth: '80%',
                       alignItems: 'center',
-                    justifyContent: 'center'
+                      justifyContent: 'center',
                     }}>
                     <Text
                       style={{
@@ -259,37 +254,37 @@ class CameraScreen extends PureComponent {
                   </View>
                 </View>
               );
-                          /* @ts-ignore */
+            /* @ts-ignore */
             if (this.state.error)
-            return (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+              return (
                 <View
                   style={{
-                    padding: 25,
-                    backgroundColor: colors.WHITE,
-                    borderColor: colors.TORCH_RED,
-                    flexDirection: 'row',
-                    borderRadius: 15,
-                    minWidth: '80%',
+                    flex: 1,
+                    justifyContent: 'center',
                     alignItems: 'center',
-                    justifyContent: 'center'
                   }}>
-                  <Text
+                  <View
                     style={{
-                      fontSize: 18,
-                      marginLeft: 10,
-                      color: colors.TORCH_RED,
+                      padding: 25,
+                      backgroundColor: colors.WHITE,
+                      borderColor: colors.TORCH_RED,
+                      flexDirection: 'row',
+                      borderRadius: 15,
+                      minWidth: '80%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    Error uploading image!
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        marginLeft: 10,
+                        color: colors.TORCH_RED,
+                      }}>
+                      Error uploading image!
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            );
+              );
             return (
               <>
                 <View
