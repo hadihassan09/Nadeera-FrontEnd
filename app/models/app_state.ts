@@ -2,16 +2,15 @@ import axios from 'axios';
 import NetInfo from "@react-native-community/netinfo";
 import { Alert } from 'react-native';
 
-export const internetStatus = () => {
-    NetInfo.fetch().then(state => {
+export const internetStatus = async () => {
+    return NetInfo.fetch().then(state => {
         console.log("Is connected?", state.isConnected);
         return state.isConnected;
     });
 };
 
 export const login = async (data: any, onSuccess: any, onFailure: any) => {
-    /* @ts-ignore */
-    if (!internetStatus()){
+    if (!await internetStatus()){
         Alert.alert(
         "Network Connection Error",
         "Check your internet connection. You don't seem to have an active internet connection. Please check your connection and try again.",
@@ -34,8 +33,7 @@ export const login = async (data: any, onSuccess: any, onFailure: any) => {
 };
 
 export const addImage = async(data: any, onSuccess: any, onFailure: any) => {
-    /* @ts-ignore */
-    if (!internetStatus()){
+    if (!await internetStatus()){
         Alert.alert(
             "Network Connection Error",
             "Check your internet connection. You don't seem to have an active internet connection. Please check your connection and try again.",
@@ -58,8 +56,7 @@ export const addImage = async(data: any, onSuccess: any, onFailure: any) => {
 };
 
 export const getImages = async(onSuccess: any, onFailure: any) => {
-    /* @ts-ignore */
-    if (!internetStatus()){
+    if (!await internetStatus()){
         Alert.alert(
             "Network Connection Error",
             "Check your internet connection. You don't seem to have an active internet connection. Please check your connection and try again.",

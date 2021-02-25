@@ -78,11 +78,7 @@ class CameraScreen extends PureComponent {
 
     const task = storage().ref(filename).putFile(uploadUri);
     try {
-      this.setState({
-        uploading: true,
-      });
-      /* @ts-ignore */
-      if(!internetStatus()){
+      if(!await internetStatus()){
         Alert.alert(
           "Network Connection Error",
           "Check your internet connection. You don't seem to have an active internet connection. Please check your connection and try again.",
@@ -91,11 +87,10 @@ class CameraScreen extends PureComponent {
           ],
           { cancelable: true }
         );
-        this.setState({
-          uploading: false
-        })
       }else{
-        task.on('state_changed', (taskSnapshot) => {
+        this.setState({
+          uploading: true,
+        });        task.on('state_changed', (taskSnapshot) => {
           const progress = Math.round(
             (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
           );
@@ -105,7 +100,7 @@ class CameraScreen extends PureComponent {
         });
         task.then(async () => {
           let url = await storage().ref(filename).getDownloadURL();
-          addImage(
+          await addImage(
             {
               uri: url,
             },
