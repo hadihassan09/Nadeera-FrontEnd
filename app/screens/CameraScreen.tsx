@@ -15,7 +15,8 @@ import storage from '@react-native-firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from '../styles/colors';
-import {addImage} from '../models/app_state';
+import {addImage, internetStatus} from '../models/app_state';
+import { Alert } from 'react-native';
 
 const PendingView = () => (
   <View
@@ -80,55 +81,70 @@ class CameraScreen extends PureComponent {
       this.setState({
         uploading: true,
       });
-      task.on('state_changed', (taskSnapshot) => {
-        const progress = Math.round(
-          (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
+      /* @ts-ignore */
+      if(!internetStatus()){
+        Alert.alert(
+          "Network Connection Error",
+          "Check your internet connection. You don't seem to have an active internet connection. Please check your connection and try again.",
+          [
+            { text: "OK", onPress: () => {} }
+          ],
+          { cancelable: true }
         );
         this.setState({
-          percentage: progress,
+          uploading: false
+        })
+      }else{
+        task.on('state_changed', (taskSnapshot) => {
+          const progress = Math.round(
+            (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100,
+          );
+          this.setState({
+            percentage: progress,
+          });
         });
-      });
-      task.then(async () => {
-        let url = await storage().ref(filename).getDownloadURL();
-        addImage(
-          {
-            uri: url,
-          },
-          (data: any) => {
-            console.log(data);
-            this.setState({
-              uploading: false,
-              percentage: '0',
-              uploaded: true,
-            });
-            setTimeout(
-              /* @ts-ignore */
-              () => {
-                this.setState({
-                  uploaded: false,
-                });
-              },
-              1500,
-            );
-          },
-          async (data: any) => {
-            let ref = storage().ref(filename);
-            await ref.delete();
-            this.setState({
-              uploading: false,
-              percentage: '0',
-              error: true,
-            });
-            setTimeout(
-              ()=>{
-                this.setState({
-                  error: false
-                })
-              }, 1500
-            )
-          },
-        );
-      });
+        task.then(async () => {
+          let url = await storage().ref(filename).getDownloadURL();
+          addImage(
+            {
+              uri: url,
+            },
+            (data: any) => {
+              console.log(data);
+              this.setState({
+                uploading: false,
+                percentage: '0',
+                uploaded: true,
+              });
+              setTimeout(
+                /* @ts-ignore */
+                () => {
+                  this.setState({
+                    uploaded: false,
+                  });
+                },
+                1500,
+              );
+            },
+            async (data: any) => {
+              let ref = storage().ref(filename);
+              await ref.delete();
+              this.setState({
+                uploading: false,
+                percentage: '0',
+                error: true,
+              });
+              setTimeout(
+                ()=>{
+                  this.setState({
+                    error: false
+                  })
+                }, 1500
+              )
+            },
+          );
+        }); 
+      }
     } catch (error) {
       let ref = storage().ref(filename);
       await ref.delete();
