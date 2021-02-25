@@ -55,6 +55,7 @@ class CameraScreen extends PureComponent {
       message: '',
       uploaded: false,
       type: true,
+      error: false
     };
 
     auth()
@@ -116,7 +117,15 @@ class CameraScreen extends PureComponent {
             this.setState({
               uploading: false,
               percentage: '0',
+              error: true,
             });
+            setTimeout(
+              ()=>{
+                this.setState({
+                  error: false
+                })
+              }, 1500
+            )
           },
         );
       });
@@ -126,7 +135,15 @@ class CameraScreen extends PureComponent {
       this.setState({
         uploading: false,
         percentage: '0',
+        error: true,
       });
+      setTimeout(
+        ()=>{
+          this.setState({
+            error: false
+          })
+        }
+      )
     }
   };
 
@@ -219,6 +236,7 @@ class CameraScreen extends PureComponent {
                       borderRadius: 15,
                       minWidth: '80%',
                       alignItems: 'center',
+                    justifyContent: 'center'
                     }}>
                     <Text
                       style={{
@@ -230,6 +248,37 @@ class CameraScreen extends PureComponent {
                   </View>
                 </View>
               );
+                          /* @ts-ignore */
+            if (this.state.error)
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    padding: 25,
+                    backgroundColor: colors.WHITE,
+                    borderColor: colors.TORCH_RED,
+                    flexDirection: 'row',
+                    borderRadius: 15,
+                    minWidth: '80%',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      marginLeft: 10,
+                      color: colors.TORCH_RED,
+                    }}>
+                    Error uploading image!
+                  </Text>
+                </View>
+              </View>
+            );
             return (
               <>
                 <View
